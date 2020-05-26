@@ -39,7 +39,7 @@ class PanopticFPN(nn.Module):
 
         self.backbone = build_backbone(cfg)
         self.proposal_generator = build_proposal_generator(cfg, self.backbone.output_shape())
-        self.roi_heads = build_roi_heads(cfg, self.backbone.output_shape())
+        #self.roi_heads = build_roi_heads(cfg, self.backbone.output_shape())
         self.sem_seg_head = build_sem_seg_head(cfg, self.backbone.output_shape())
 
         pixel_mean = torch.Tensor(cfg.MODEL.PIXEL_MEAN).to(self.device).view(3, 1, 1)
@@ -96,9 +96,11 @@ class PanopticFPN(nn.Module):
             gt_instances = None
         if self.proposal_generator:
             proposals, proposal_losses = self.proposal_generator(images, features, gt_instances)
-        detector_results, detector_losses = self.roi_heads(
-            images, features, proposals, gt_instances
-        )
+        #detector_results, detector_losses = self.roi_heads(
+        #    images, features, proposals, gt_instances
+        #)
+        detector_results = proposals
+        detector_losses = proposal_losses
 
         if self.training:
             losses = {}
